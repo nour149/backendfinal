@@ -36,6 +36,7 @@ class TaskController extends AbstractController
             $formattedTaskList = [];
             foreach ($taskList as $task) {
                 $formattedTaskList[] = [
+                    'id'=>$task->getId(),
                     'name' => $task->getName(),
                     'description' => $task->getDescription(),
                     'status' => $task->getStatus(),
@@ -57,6 +58,8 @@ class TaskController extends AbstractController
             return new JsonResponse(['error' => $e->getMessage()], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
         }
+
+
 
         #[Route('/api/tasks/{id}', name: 'detailTask', methods: ['GET'])]
          public function getDetailTask(int $id, SerializerInterface $serializer, TaskRepository $taskRepository): JsonResponse
@@ -103,6 +106,25 @@ class TaskController extends AbstractController
             'location' => $location
         ], Response::HTTP_CREATED, ['Location' => $location]);
     }
+
+
+
+
+    #[Route('/api/task', name: "createTaskfrontend", methods: ['POST'])]
+    public function createSection(Request $request, SerializerInterface $serializer, EntityManagerInterface $em): JsonResponse
+    {
+        $task= $serializer->deserialize($request->getContent(), Task::class, 'json');
+        $em->persist($task);
+        $em->flush();
+
+        $jsonTask = $serializer->serialize($task, 'json');
+
+        return new JsonResponse($jsonTask, Response::HTTP_CREATED, [], true);
+    }
+
+
+
+
     #[Route('/api/tasks/{id}', name: 'updateTask', methods: ['PUT'])]
     public function updateTask(Request $request, SerializerInterface $serializer, Task $currentTask, EntityManagerInterface $em): JsonResponse
     {
@@ -119,6 +141,7 @@ class TaskController extends AbstractController
         $content = $request->toArray();
 
 
+        
 
         $em->persist($currentTask);
         $em->flush();

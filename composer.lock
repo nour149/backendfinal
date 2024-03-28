@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1065b2f3a5189f36f9937370bf32fb23",
+    "content-hash": "3d72bffcc988f2d0a3b7d22f4427a8fa",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -21,7 +21,8 @@
                 "shasum": ""
             },
             "require": {
-                "php": "~7.1 || ^8.0"
+                "php": "~7.1 || ^8.0",
+                "symfony/security-core": "^5.0"
             },
             "conflict": {
                 "doctrine/common": ">2.2,<2.4"

@@ -35,10 +35,13 @@ class AccessProjectController extends AbstractController
             $formattedAccessProjects = [];
             foreach ($accessProjects as $accessProject) {
                 $formattedAccessProjects[] = [
-                    'status' => $accessProject->getStatus(),
+
+                    'id'=>$accessProject->getId(),
                     'role' => $accessProject->getRole(),
                     'created_at' => $accessProject->getCreatedAt()?->format('Y-m-d H:i:s'),
                     'updated_at' => $accessProject->getUpdatedAt()?->format('Y-m-d H:i:s'),
+                    'user_id' => $accessProject->getUser() ? $accessProject->getUser()->getId() : null,
+                    'status' => $accessProject->getStatus(),
                     // Add more fields as needed
                 ];
             }

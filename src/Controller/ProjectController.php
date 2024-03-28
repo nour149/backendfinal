@@ -35,6 +35,7 @@ class ProjectController extends AbstractController
             $formattedProjetList = [];
             foreach ($projetList as $projet) {
                 $formattedProjetList[] = [
+                    'id'=>$projet->getId(),
                     'name' => $projet->getName(),
                     'color' => $projet->getColor(),
                     'archived' => $projet->isArchived(),

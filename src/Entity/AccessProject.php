@@ -117,7 +117,22 @@ class AccessProject
      */
     private ?Projet $projet = null;
 
+    #[ORM\ManyToOne(inversedBy: 'accessProjects')]
+    private ?User $user = null;
+
     // ...
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
 
 
 

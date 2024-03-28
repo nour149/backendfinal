@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Tier;
 use App\Repository\TierRepository;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,40 +31,22 @@ class TierController extends AbstractController
         ]);
     }
 
-
     #[Route('/tiers', name: 'tiers', methods: ['GET'])]
-    public function getTierList(TierRepository $tierRepository, SerializerInterface $serializer): JsonResponse
-    {
+    public function getTierList(
+        TierRepository $tierRepository,
+        SerializerInterface $serializer,
+        AuthorizationCheckerInterface $authorizationChecker
+    ): JsonResponse {
+      
         try {
             $tierList = $tierRepository->findAll();
-
-            // Extract only the necessary information from each Tier entity
-            $formattedTierList = [];
-            foreach ($tierList as $tier) {
-                $formattedTierList[] = [
-                    'name' => $tier->getName(),
-                    'tel' => $tier->getTel(),
-                    'email' => $tier->getEmail(),
-                    'adress' => $tier->getAdress(),
-                    'town' => $tier->getTown(),
-                    'country' => $tier->getCountry(),
-                    'vat' => $tier->getVat(),
-                    'rne' => $tier->getRne(),
-                    'firstResp' => $tier->getFirstResp(),
-                    'emailfirstResp' => $tier->getEmailfirstResp(),
-                    'telfirstResp' => $tier->getTelfirstResp(),
-                    'logo' => $tier->getLogo(),
-                    'archived' => $tier->isArchived(),
-                    'blocked' => $tier->isBlocked(),
-                    'created_at' => $tier->getCreatedAt() ? $tier->getCreatedAt()->format('Y-m-d H:i:s') : null,
-                    'updated_at' => $tier->getUpdatedAt() ? $tier->getUpdatedAt()->format('Y-m-d H:i:s') : null,
-                    'relation' => $tier->getRelation(),
-                ];
-            }
-
-            $jsonTierList = $serializer->serialize($formattedTierList, 'json');
+    
+            // Serialize the tier list
+            $jsonTierList = $serializer->serialize($tierList, 'json');
+    
             return new JsonResponse($jsonTierList, Response::HTTP_OK, [], true);
         } catch (\Exception $e) {
+            // Handle exceptions
             throw new HttpException(Response::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
         }
     }
@@ -90,7 +73,7 @@ class TierController extends AbstractController
     }
 
     #[Route('/api/tiers', name: "createTier", methods: ['POST'])]
-    ///#[IsGranted('ROLE_ADMIN', message: 'Vous navez pas les droits suffisants pour créer un livre')]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous navez pas les droits suffisants pour créer un livre')]
     public function createTier(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, UrlGeneratorInterface $urlGenerator): JsonResponse
     {
 
@@ -140,4 +123,5 @@ class TierController extends AbstractController
 
         return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
     }
+
 }
